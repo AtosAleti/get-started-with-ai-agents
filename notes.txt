@@ -1,0 +1,43 @@
+AZURE_AI_AGENT_DEPLOYMENT_NAME="gpt-5-mini"
+AZURE_AI_AGENT_ID="rfp-agent-rl-dev:11"
+AZURE_AI_AGENT_NAME="agent-template-assistant"
+AZURE_AI_EMBED_DEPLOYMENT_NAME="text-embedding-3-small"
+AZURE_AI_EMBED_DIMENSIONS=1536
+AZURE_AI_PROJECT_ENDPOINT="https://rfp-eastus2-project-resource.services.ai.azure.com/api/projects/rfp-eastus2-project"
+AZURE_AI_SEARCH_CONNECTION_NAME=""
+AZURE_AI_SEARCH_ENDPOINT=""
+AZURE_AI_SEARCH_INDEX_NAME="index_sample"
+AZURE_BLOB_CONTAINER_NAME="documents"
+AZURE_CONTAINER_ENVIRONMENT_NAME="containerapps-env-6s56mczjhfrgi"
+AZURE_CONTAINER_REGISTRY_ENDPOINT="cr6s56mczjhfrgi.azurecr.io"
+AZURE_ENV_NAME="aura-chat-web-app-ra1-dev"
+AZURE_EXISTING_AGENT_ID="rfp-agent-rl-dev:11"
+AZURE_EXISTING_AIPROJECT_ENDPOINT="https://rfp-eastus2-project-resource.services.ai.azure.com/api/projects/rfp-eastus2-project"
+AZURE_EXISTING_AIPROJECT_RESOURCE_ID="C:/Users/A463218/AppData/Local/Programs/Git/subscriptions/e868cd9c-9986-46bf-b10c-420d761aefb5/resourceGroups/rfp-ai-analyzer-rg/providers/Microsoft.CognitiveServices/accounts/rfp-eastus2-project-resource"
+AZURE_LOCATION="eastus2"
+AZURE_RESOURCE_GROUP="rg-aura-chat-web-app-ra1-dev"
+AZURE_SUBSCRIPTION_ID="e868cd9c-9986-46bf-b10c-420d761aefb5"
+AZURE_TENANT_ID="d9d2496e-36bc-4e6d-b7c4-6c961eee1ed2"
+ENABLE_AZURE_MONITOR_TRACING="false"
+OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT="false"
+SEARCH_CONNECTION_ID=""
+SERVICE_API_AND_FRONTEND_IMAGE_NAME="cr6s56mczjhfrgi.azurecr.io/api_and_frontend:azd-deploy-1771510099"
+SERVICE_API_AND_FRONTEND_RESOURCE_EXISTS="true"
+SERVICE_API_ENDPOINTS="[\"https://ca-api-6s56mczjhfrgi.salmonflower-70d87688.eastus2.azurecontainerapps.io\"]"
+SERVICE_API_IDENTITY_PRINCIPAL_ID="83f0f02e-5e3e-432d-a77a-9d974a6d020b"
+SERVICE_API_NAME="ca-api-6s56mczjhfrgi"
+SERVICE_API_URI="https://ca-api-6s56mczjhfrgi.salmonflower-70d87688.eastus2.azurecontainerapps.io"
+STORAGE_ACCOUNT_RESOURCE_ID="/subscriptions/e868cd9c-9986-46bf-b10c-420d761aefb5/resourceGroups/rg-aura-chat-web-app-ra1-dev/providers/Microsoft.Storage/storageAccounts/st6s56mczjhfrgi"
+
+alias azd='/c/Users/A463218/AppData/Local/Programs/Azure\ Dev\ CLI/azd.exe'
+azd auth login
+azd env new aura-chat-web-app-ra2-dev
+azd env set AZURE_AI_PROJECT_ENDPOINT "https://rfp-eastus2-project-resource.services.ai.azure.com/api/projects/rfp-eastus2-project"
+azd env set AZURE_AI_AGENT_ID "rfp-agent-rl-dev:11"
+#azd env set azureExistingAIProjectResourceId "/subscriptions/e868cd9c-9986-46bf-b10c-420d761aefb5/resourceGroups/rfp-ai-analyzer-rg/providers/Microsoft.CognitiveServices/accounts/rfp-eastus2-project-resource/projects/rfp-eastus2-project"
+
+#azd env set azureExistingAgentId "rfp-agent-piotrl-dev:5"
+
+azd provision
+azd deploy
+

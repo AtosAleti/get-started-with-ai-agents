@@ -28,6 +28,8 @@ param environmentName string
 })
 param location string
 
+@description('The existing AI Project endpoint')
+param azureExistingAIProjectEndpoint string = ''
 @description('Use this parameter to use an existing AI project resource ID')
 param azureExistingAIProjectResourceId string = ''
 @description('The Azure resource group where new resources will be deployed')
@@ -198,7 +200,7 @@ var resolvedStorageAccountName = !empty(storageAccountName)
   ? storageAccountName
   : '${abbrs.storageStorageAccounts}${resourceTokenStable}' 
 
-module ai 'core/host/ai-environment.bicep' = if (empty(azureExistingAIProjectResourceId) || alwaysReprovision) {
+module ai 'core/host/ai-environment.bicep' = if (false) {
   name: 'ai'
   scope: rg
   params: {
@@ -249,15 +251,12 @@ module logAnalytics 'core/monitor/loganalytics.bicep' = if (!empty(azureExisting
     name: logAnalyticsWorkspaceResolvedName
   }
 }
-var existingProjEndpoint = (!empty(azureExistingAIProjectResourceId) && !alwaysReprovision) ? format('https://{0}.services.ai.azure.com/api/projects/{1}',split(azureExistingAIProjectResourceId, '/')[8], split(azureExistingAIProjectResourceId, '/')[10]) : ''
 
-var projectResourceId = (!empty(azureExistingAIProjectResourceId) && !alwaysReprovision)
-  ? azureExistingAIProjectResourceId
-  : ai!.outputs.projectResourceId
+// Use the ID if provided, otherwise default to empty string to avoid null errors
+var projectResourceId = !empty(azureExistingAIProjectResourceId) ? azureExistingAIProjectResourceId : ''
 
-var projectEndpoint = (!empty(azureExistingAIProjectResourceId) && !alwaysReprovision)
-  ? existingProjEndpoint
-  : ai!.outputs.aiProjectEndpoint
+// Use the Endpoint URL from your .env directly
+var projectEndpoint = !empty(azureExistingAIProjectEndpoint) ? azureExistingAIProjectEndpoint : ''
 
 var resolvedApplicationInsightsName = !useApplicationInsights || !empty(azureExistingAIProjectResourceId)
   ? ''
@@ -298,9 +297,7 @@ module containerApps 'core/host/container-apps.bicep' = {
     containerRegistryName: '${abbrs.containerRegistryRegistries}${resourceToken}'
     tags: tags
     containerAppsEnvironmentName: 'containerapps-env-${resourceToken}'
-    logAnalyticsWorkspaceName: empty(azureExistingAIProjectResourceId) || alwaysReprovision
-      ? ai!.outputs.logAnalyticsWorkspaceName
-      : logAnalytics!.outputs.name
+    logAnalyticsWorkspaceName: logAnalytics.outputs.name
   }
 }
 
@@ -314,19 +311,22 @@ module api 'api.bicep' = {
     tags: tags
     identityName: '${abbrs.managedIdentityUserAssignedIdentities}api-${resourceToken}'
     containerAppsEnvironmentName: containerApps.outputs.environmentName
-    azureExistingAIProjectResourceId: projectResourceId
+    azureExistingAIProjectResourceId: azureExistingAIProjectResourceId
     containerRegistryName: containerApps.outputs.registryName
     agentDeploymentName: agentDeploymentName
     searchConnectionName: searchConnectionName
     aiSearchIndexName: aiSearchIndexName
+    // Use the _final variables which we ensured are mapped to parameters, not module outputs
     searchServiceEndpoint: searchServiceEndpoint_final
     embeddingDeploymentName: embeddingDeploymentName
     embeddingDeploymentDimensions: embeddingDeploymentDimensions
     agentName: agentName
-    agentID: agentID
+    // Mapping to your existing Agent ID
+    agentID: azureExistingAgentId
     enableAzureMonitorTracing: enableAzureMonitorTracing
     otelInstrumentationGenAICaptureMessageContent: otelInstrumentationGenAICaptureMessageContent
-    projectEndpoint: projectEndpoint
+    // Mapping to your existing Project Endpoint
+    projectEndpoint: azureExistingAIProjectEndpoint
     searchConnectionId: searchConnectionId_final
     storageAccountResourceId: storageAccountResourceId_final
     blobContainerName: blobContainerName
